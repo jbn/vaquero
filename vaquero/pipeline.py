@@ -1,6 +1,7 @@
-import types
 import ast
 import imp
+import io
+import types
 from .invocation_tools import _name_of
 
 
@@ -29,7 +30,7 @@ def collect_func_ordering(file_path_or_module):
     else:
         file_path = file_path_or_module
 
-    with open(file_path) as fp:
+    with io.open(file_path) as fp:
         root = ast.parse(fp.read())
 
     names = []
