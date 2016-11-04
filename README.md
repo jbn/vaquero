@@ -11,20 +11,23 @@
 
 ## TL;DR
 
-It's a library for iterative and interactive data wrangling at laptop-scale. 
-If you spend a lot of time in a [Jupyter notebook](http://jupyter.org/), 
-trying to clean dirty, raw data, it's probably useful. 
+It's a library for iterative and interactive data wrangling at 
+laptop-scale. If you spend a lot of time in a 
+[Jupyter notebook](http://jupyter.org/), trying to clean dirty, raw 
+data, it's probably useful. 
 
-It would be nice if it were possible to write data cleaning code correctly. 
-But, the people who pay you to do data analysis don't do data analysis 
-and don't understand how dangerous dirty data are, so you rarely get the 
-luxury of feeling secure with what you extract. Vaquero tries to find a 
-balance between "business" demands and good hygiene. Borrowing from Larry 
-Page, it tries "to make the easy things easy, and the hard things possible." 
-In this context, "hard things" refers to those wonderfully fun situations 
-where, you write some code that you know will break in the future but you have 
-no time to fix it; then, three months later, it breaks and you have no idea 
-what your code does.
+It would be nice if it were possible to write data cleaning code 
+correctly. But, the people who pay you to do data analysis don't do 
+data analysis and don't understand how dangerous dirty data are, so you 
+rarely get the luxury of feeling secure with what you extract. Vaquero 
+tries to find a balance between "business" demands and good hygiene. 
+Borrowing from Larry Page, it tries "to make the easy things easy, and 
+the hard things possible." In this context, "hard things" refers to 
+those wonderfully fun situations where, you write some code that you 
+know will break in the future but you have no time to fix it; then, 
+three months later, it breaks and you have no idea what your code does.
+
+See also: [On Disappearing Code](https://medium.com/@generativist/on-disappearing-code-7fa2494203aa)
 
 ## An Example
 

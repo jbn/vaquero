@@ -1,27 +1,18 @@
-- use descriptors for examination
+Introducing Vaquero (very alpha): A #python library for iterative and interactive #data wrangling at laptop-scale: 
+
 - things almost end up looking like ASM files. And that's okay!
 - use orderd dicts. they make debugging real damn easy
 - END sentinels (i.e. okay, good, stop processing)
 - Add note on clojure influence
 - Add note: This is mostly experimental. I use this to continue to play in a 
     open frontiner. But plenty of solutions do this.
-- Pretty HTML failure objects (more than just a dict)
 - naming convention
 - Renaming Effort
 - Failure sets
 - Non-linearized flow (lasso)
-- IPython displays
-- Widget interactors
 - %run -i convention (actually, some magic)
 - Trim execution stack so vaquero is never in path.
-- generate_unit_test
 - smart sampler (named exceptions)
-- tab complete
-- fork-join merge
-    - .n_failures
-    - .merge
-    - does this affect sub-failures?
-- no with pattern
 - refactor unit tests
 - enforce 'key': "value" pattern for my strings
 - if 'k' exists then -> onto value pattern
