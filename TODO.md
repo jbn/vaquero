@@ -1,5 +1,3 @@
-Introducing Vaquero (very alpha): A #python library for iterative and interactive #data wrangling at laptop-scale: 
-
 - things almost end up looking like ASM files. And that's okay!
 - use orderd dicts. they make debugging real damn easy
 - END sentinels (i.e. okay, good, stop processing)
