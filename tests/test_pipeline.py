@@ -1,11 +1,17 @@
 import unittest
 from vaquero.pipeline import *
+import os
+
+#THIS_DIR = os.path.dirname(os.path.realpath(__file__))
+#INVOCATION_EXAMPLE_PATH = os.path.join("invocation_example.py")
+#PIPELINE_EXAMPLE_PATH = os.path.join("pipeline_example.py")
+from tests import invocation_example, pipeline_example
 
 
 class TestPipeline(unittest.TestCase):
 
     def test_collect_func_ordering(self):
-        from tests import invocation_example
+
         fs = collect_func_ordering(invocation_example)
         expected = ['square_rooted', 'ignore_me', 'scale',
                     'f', '_private_function']
@@ -14,8 +20,6 @@ class TestPipeline(unittest.TestCase):
                          collect_func_ordering(invocation_example.__file__))
 
     def test_collect_pipeline(self):
-        from tests import invocation_example
-
         fs = collect_pipeline(invocation_example, skip_private=False)
         expected = ['square_rooted', 'ignore_me', 'scale',
                     'f', '_private_function']
@@ -72,8 +76,6 @@ class TestPipeline(unittest.TestCase):
 
 class TestModulePipeline(unittest.TestCase):
     def test_init(self):
-        from tests import invocation_example
-
         pipeline = ModulePipeline(invocation_example,
                                   skip_private_applications=True,
                                   include_private_captures=True,
@@ -96,8 +98,6 @@ class TestModulePipeline(unittest.TestCase):
                          ['square_rooted', 'ignore_me', 'scale', 'f'])
 
     def test_call(self):
-        from tests import pipeline_example
-
         pipeline = ModulePipeline(pipeline_example)
         items = []
         pipeline(items)

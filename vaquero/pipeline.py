@@ -1,6 +1,6 @@
 import ast
 import imp
-import io
+import inspect
 import types
 from .invocation_tools import _name_of
 
@@ -26,12 +26,16 @@ def collect_func_ordering(file_path_or_module):
     :return: the ordered top-level function names.
     """
     if isinstance(file_path_or_module, types.ModuleType):
-        file_path = file_path_or_module.__file__
+        file_path = inspect.getsourcefile(file_path_or_module)
     else:
         file_path = file_path_or_module
 
-    with io.open(file_path) as fp:
-        root = ast.parse(fp.read())
+    with open(file_path, 'r') as fp:
+        s = fp.read()
+        print(type(file_path_or_module))
+        print("]]]]" + s + "[[[[")
+
+        root = ast.parse(s)
 
     names = []
     for node in ast.iter_child_nodes(root):
