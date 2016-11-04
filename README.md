@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/jbn/vaquero.svg?branch=master)](https://travis-ci.org/jbn/vaquero)
+[![Coverage Status](https://coveralls.io/repos/github/jbn/vaquero/badge.svg?branch=master)](https://coveralls.io/github/jbn/vaquero?branch=master)
+
+
 # What is Vaquero?
 
 <div align="center">
