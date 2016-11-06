@@ -31,11 +31,7 @@ def collect_func_ordering(file_path_or_module):
         file_path = file_path_or_module
 
     with open(file_path, 'r') as fp:
-        s = fp.read()
-        print(type(file_path_or_module))
-        print("]]]]" + s + "[[[[")
-
-        root = ast.parse(s)
+        root = ast.parse(fp.read())
 
     names = []
     for node in ast.iter_child_nodes(root):
