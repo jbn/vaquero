@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from fnmatch import fnmatch
 from functools import reduce
-
+from collections import OrderedDict
 
 def first(items):
     """
@@ -31,6 +31,19 @@ def jsonlines_reader(file_path, skip_decode_errors=False):
             except json.JSONDecodeError:
                 if not skip_decode_errors:
                     raise
+
+
+def examine_pairwise_result(f, input_doc):
+    """
+    Test f against input doc and return the resulting dict.
+
+    :param f: a function with a `f(src_obj, dst_dict)` signature
+    :param input_doc: the input object
+    :return: a dictionary populated via f
+    """
+    d = OrderedDict()
+    f(input_doc, d)
+    return d
 
 
 def files_processor(generator_func, dir_path, shell_ptn="*", recursive=False):

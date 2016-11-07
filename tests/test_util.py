@@ -31,6 +31,15 @@ class TestUtil(unittest.TestCase):
         pd_print_entirely(series)
         self.assertEqual(1001, len(sys.stdout.getvalue().splitlines()))
 
+    def test_examine_pairwise_res(self):
+        src = {'x': 100}
+
+        def f(s, d):
+            d['x'] = s['x'] ** 2
+
+        res = examine_pairwise_result(f, src)
+        self.assertEqual(res['x'], 10000)
+
     def test_np_and(self):
         x = np.arange(10)
         res = list(x[np_and(x > 5, x % 2 == 0)])
