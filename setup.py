@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='vaquero',
-    version='0.0.1',
+    version='0.0.2',
     description="A tool for iterative and interactive data wrangling.",
     long_description="See: `github repo <https://github.com/jbn/vaquero>`_.",
     url="https://github.com/jbn/vaquero",
