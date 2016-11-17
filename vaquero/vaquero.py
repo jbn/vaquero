@@ -199,10 +199,13 @@ class Vaquero:
             items = jmespath.search(selector, captures)
             return set(items) if as_set else items
 
-    def first_failure(self, f):
+    def first_failure(self, f, ignore_call_args=False):
         errors = self.examine(f)
         assert errors, "No failure on {}".format(f)
-        return errors[0]
+        if ignore_call_args:
+            return {k: v for k, v in errors[0].items() if k != 'call_args'}
+        else:
+            return errors[0]
 
     def execute_on_failure(self, f, i, captured_func_name=None):
         """
