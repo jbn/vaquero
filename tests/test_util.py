@@ -18,6 +18,14 @@ class TestUtil(unittest.TestCase):
 
         self.assertEqual(first(f()), 10)
 
+    def test_nth(self):
+        def f():
+            yield 10
+            yield 20
+            yield 30
+
+        self.assertEqual(nth(f(), 1), 20)
+
     def test_jsonlines_reader(self):
         reader = jsonlines_reader(os.path.join(THIS_DIR, "demo.jsonlines"))
         expected = [{"first": "Bob", "age": 32},

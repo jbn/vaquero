@@ -6,6 +6,7 @@ from fnmatch import fnmatch
 from functools import reduce
 from collections import OrderedDict
 
+
 def first(items):
     """
     Get the first item from an iterable.
@@ -17,6 +18,20 @@ def first(items):
     """
     for item in items:
         return item
+
+
+def nth(items, i):
+    """
+    Get the nth item from an iterable.
+
+    Warning: It consumes from a generator.
+
+    :param items: an iterable
+    :return: the first in the iterable
+    """
+    for j, item in enumerate(items):
+        if j == i:
+            return item
 
 
 def jsonlines_reader(file_path, skip_decode_errors=False):
