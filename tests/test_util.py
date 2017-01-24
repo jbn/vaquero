@@ -49,3 +49,20 @@ class TestUtil(unittest.TestCase):
         x = np.arange(10)
         res = list(x[np_or(x > 5, x % 2 == 0)])
         self.assertEqual(res, [0, 2, 4, 6, 7, 8, 9])
+
+    def test_deferred_delete(self):
+        d = {'a': 20, 'b': 30, 'c': 40}
+        with deferred_delete(d) as proxy:
+            for k in d:
+                if k == 'b':
+                    del proxy[k]
+        self.assertEqual({'a': 20, 'c': 40}, d)
+        self.assertEqual(proxy.executed_deletions, 1)
+
+        with deferred_delete(d) as proxy:
+            del proxy['b']
+
+        with self.assertRaises(KeyError):
+            with deferred_delete(d, skip_missing=False) as proxy:
+                del proxy['b']
+

@@ -87,3 +87,43 @@ def np_or(condition, *conditions):
     # This is just much less noise then (a) || (b) || (c) to me.
     return reduce(np.logical_or, conditions, condition)
 
+
+class deferred_delete:
+    """
+    Context manager for performing deferred deletes on some dictionary.
+
+    Generally useful for identifying which keys to delete in a loop, then
+    having them automatically deleted later, since you can't delete
+    mid-iteration (a RuntimeError).
+
+    Deletions execute in order. And, multiple calls to delete are possible.
+    """
+
+    def __init__(self, obj, skip_missing=True):
+        """
+
+        :param obj: the dictionary (or some object implementing `__delitem__`)
+        :param skip_missing: if True then the deferred operation only calls
+            the delete if the key is present in the underlying object
+        """
+        self._d = obj
+        self._ks = []
+        self._skip_missing = skip_missing
+        self._executed_deletions = 0
+
+    def __enter__(self):
+        self._executed_deletions = 0
+        return self
+
+    def __exit__(self, exception_type, exception_value, traceback):
+        for k in self._ks:
+            if not self._skip_missing or k in self._d:
+                self._executed_deletions += 1
+                del self._d[k]
+
+    def __delitem__(self, k):
+        self._ks.append(k)
+
+    @property
+    def executed_deletions(self):
+        return self._executed_deletions
