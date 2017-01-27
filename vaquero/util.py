@@ -50,6 +50,20 @@ def tap(items, f=print):
         yield item
 
 
+def find(items, predicate):
+    """
+    Find the item in an iterable.
+
+    :param items: an iterable
+    :param predicate: a function which returns true if it matches your query
+    :return: the first item which matched the predicate, else None
+    """
+    for item in items:
+        if predicate(item):
+            return item
+    return None
+
+
 def jsonlines_reader(file_path, skip_decode_errors=False):
     """
     Yield each document in a JSON-lines document.

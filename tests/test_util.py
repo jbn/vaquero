@@ -35,6 +35,11 @@ class TestUtil(unittest.TestCase):
         total = sum(x for x in tap(range(10), gobble))
         self.assertEqual(total, sum(accumulator))
 
+    def test_find(self):
+        self.assertEqual(find([1, 2, 3, 4], lambda x: x > 1), 2)
+        self.assertEqual(find(reversed([1, 2, 3, 4]), lambda x: x > 1), 4)
+        self.assertIsNone(find([1, 2, 3, 4], lambda x: x > 10))
+
     def test_jsonlines_reader(self):
         reader = jsonlines_reader(os.path.join(THIS_DIR, "demo.jsonlines"))
         expected = [{"first": "Bob", "age": 32},
