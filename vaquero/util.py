@@ -64,6 +64,17 @@ def find(items, predicate):
     return None
 
 
+def slurp(file_path):
+    """
+    Open, read, and close a file.
+
+    :param file_path: the file to process
+    :return: the result of calling `read`
+    """
+    with open(file_path) as fp:
+        return fp.read()
+
+
 def jsonlines_reader(file_path, skip_decode_errors=False):
     """
     Yield each document in a JSON-lines document.
@@ -92,16 +103,24 @@ def examine_pairwise_result(f, input_doc):
 
 
 def files_processor(generator_func, dir_path, shell_ptn="*", recursive=False):
+    """
+    Process some files as a stream of entities.
+
+    :param generator_func: a function which takes a file path and generates
+        items to process (e.g. jsonlines_reader)
+    :param dir_path: the root directory to examine
+    :param shell_ptn: the shell pattern for matching file names (e.g. jsonl)
+    :param recursive: if True, then traverse subdirectories
+    """
     for file_name in os.listdir(dir_path):
         file_path = os.path.join(dir_path, file_name)
         if recursive and os.path.isdir(file_path):
             for item in files_processor(generator_func, file_path,
                                         shell_ptn, True):
                 yield item
-        else:
-            if fnmatch(file_name, shell_ptn):
-                for item in generator_func(file_path):
-                    yield item
+        elif fnmatch(file_name, shell_ptn):
+            for item in generator_func(file_path):
+                yield item
 
 
 def pd_print_entirely(frame_or_series):

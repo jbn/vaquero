@@ -50,6 +50,12 @@ class TestUtil(unittest.TestCase):
         with self.assertRaises(ValueError):
             list(jsonlines_reader(file_path, False))
 
+    def test_slurp(self):
+        s = slurp(os.path.join(THIS_DIR, "fixtures", "files_processor",
+                               "hello.txt"))
+        self.assertEqual(s, "hello")
+        pass
+
     def test_pd_print_entirely(self):
         if not hasattr(sys.stdout, "getvalue"):
             self.fail("need to run in buffered mode")
@@ -75,6 +81,14 @@ class TestUtil(unittest.TestCase):
         x = np.arange(10)
         res = list(x[np_or(x > 5, x % 2 == 0)])
         self.assertEqual(res, [0, 2, 4, 6, 7, 8, 9])
+
+    def test_files_processor(self):
+        file_path = os.path.join(THIS_DIR, "fixtures", "files_processor")
+        items = files_processor(slurp, file_path, "*.txt", recursive=True)
+        self.assertEqual(list(items), list("hellogoodbye"))
+
+        items = files_processor(slurp, file_path, "*.txt", recursive=False)
+        self.assertEqual(list(items), list("hello"))
 
     def test_deferred_delete(self):
         d = {'a': 20, 'b': 30, 'c': 40}
