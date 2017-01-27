@@ -41,10 +41,14 @@ class TestUtil(unittest.TestCase):
         self.assertIsNone(find([1, 2, 3, 4], lambda x: x > 10))
 
     def test_jsonlines_reader(self):
-        reader = jsonlines_reader(os.path.join(THIS_DIR, "demo.jsonlines"))
+        file_path = os.path.join(THIS_DIR, "demo.jsonlines")
+        reader = jsonlines_reader(file_path, True)
         expected = [{"first": "Bob", "age": 32},
                     {"first": "Alice", "age": 33}]
         self.assertEqual(list(reader), expected)
+
+        with self.assertRaises(ValueError):
+            list(jsonlines_reader(file_path, False))
 
     def test_pd_print_entirely(self):
         if not hasattr(sys.stdout, "getvalue"):

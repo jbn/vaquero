@@ -73,7 +73,7 @@ def jsonlines_reader(file_path, skip_decode_errors=False):
         for line in fp:
             try:
                 yield json.loads(line)
-            except json.JSONDecodeError:
+            except ValueError:
                 if not skip_decode_errors:
                     raise
 
