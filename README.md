@@ -39,7 +39,8 @@ It's easier to get a sense of "why" by looking at a notebook.
 ## Expecting Exceptions
 
 Vaquero *expects* exceptions, making them pretty unexceptional. But,
-Python's exception handling is cheap, so that's fine. Plus, with dirty
+Python's exception handling is cheap, so that's fine (i.e. EAFP -- 
+Easier to ask for forgiveness than permission). Plus, with dirty
 data, you know it will probably fail for some records. During
 development, rather than halting each time, vaquero continues on its
 merry way, up to some failure limit. For each failure, the library
