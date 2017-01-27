@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 import json
 import numpy as np
@@ -32,6 +34,20 @@ def nth(items, i):
     for j, item in enumerate(items):
         if j == i:
             return item
+
+
+def tap(items, f=print):
+    """
+    Apply f (default=print) to each item in items then yield the item.
+
+
+    :param items: an iterable
+    :param f: function to call for each item in items
+
+    """
+    for item in items:
+        f(item)
+        yield item
 
 
 def jsonlines_reader(file_path, skip_decode_errors=False):

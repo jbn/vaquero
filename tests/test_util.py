@@ -26,6 +26,15 @@ class TestUtil(unittest.TestCase):
 
         self.assertEqual(nth(f(), 1), 20)
 
+    def test_tap(self):
+        accumulator = []
+
+        def gobble(x):
+            accumulator.append(x)
+
+        total = sum(x for x in tap(range(10), gobble))
+        self.assertEqual(total, sum(accumulator))
+
     def test_jsonlines_reader(self):
         reader = jsonlines_reader(os.path.join(THIS_DIR, "demo.jsonlines"))
         expected = [{"first": "Bob", "age": 32},
