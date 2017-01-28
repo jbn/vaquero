@@ -90,6 +90,41 @@ class TestUtil(unittest.TestCase):
         items = files_processor(slurp, file_path, "*.txt", recursive=False)
         self.assertEqual(list(items), list("hello"))
 
+
+    def test_op_collector(self):
+        d = {}
+
+        with self.assertRaises(KeyError):
+            ops = OpCollector(d)
+            del ops['x']
+            ops.apply_all()
+
+        with self.assertRaises(AttributeError):
+            ops = OpCollector(d)
+            ops.doesnt_exist(10)
+
+        ops = OpCollector(d, eager=False)
+        ops.doesnt_exist(10)
+
+        d = {}
+        ops = OpCollector(d, swallow_exceptions=[KeyError])
+        ops['y'] = 20
+        del ops['x']
+        self.assertEqual(ops.apply_all(), 1)
+        self.assertEqual(d, {'y': 20})
+
+        called = []
+        def f(x):
+            called.append(x)
+        ops = OpCollector(f)
+        ops(10)
+        self.assertEqual(str(ops), repr(ops))
+        self.assertEqual(str(ops), "OpCollector([1 ops ready for processing])")
+        self.assertEqual(ops.ops, [('__call__', (10,), {})])
+        ops.apply_all()
+        self.assertEqual(str(ops), "OpCollector([0 ops ready for processing])")
+        self.assertEqual(called, [10])
+
     def test_deferred_delete(self):
         d = {'a': 20, 'b': 30, 'c': 40}
         with deferred_delete(d) as proxy:
@@ -97,7 +132,6 @@ class TestUtil(unittest.TestCase):
                 if k == 'b':
                     del proxy[k]
         self.assertEqual({'a': 20, 'c': 40}, d)
-        self.assertEqual(proxy.executed_deletions, 1)
 
         with deferred_delete(d) as proxy:
             del proxy['b']
@@ -105,4 +139,12 @@ class TestUtil(unittest.TestCase):
         with self.assertRaises(KeyError):
             with deferred_delete(d, skip_missing=False) as proxy:
                 del proxy['b']
+
+        d = {}
+        with self.assertRaises(ZeroDivisionError):
+            with deferred_delete(d) as proxy:
+                del proxy['a']
+                proxy['a'] = 20
+                1/0
+        self.assertEqual(d, {})
 

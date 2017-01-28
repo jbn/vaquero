@@ -4,8 +4,9 @@ import os
 import json
 import numpy as np
 import pandas as pd
+from contextlib import contextmanager
 from fnmatch import fnmatch
-from functools import reduce
+from functools import partial, reduce
 from collections import OrderedDict
 
 
@@ -152,7 +153,83 @@ def np_or(condition, *conditions):
     return reduce(np.logical_or, conditions, condition)
 
 
-class deferred_delete:
+try:
+    from contextlib import suppress
+except ImportError:
+    @contextmanager
+    def suppress(*exceptions):
+        try:
+            yield
+        except exceptions:
+            pass
+
+
+class OpCollector:
+    """
+    Collects state-changing ops on an underlying object for deferred execution.
+    """
+
+    def __init__(self, obj, eager=True, swallow_exceptions=None):
+        """
+        :param obj: the underlying object for deferred manipulation
+        :param eager: if True (default) check for the existence of the
+            selected attribute at log time, rather than application time
+        :param swallow_exceptions: an list of exceptions to swallow at
+            application time
+        """
+        self._obj = obj
+        self._ops = []
+        self._eager = eager
+        self._swallow_exceptions = swallow_exceptions or []
+
+    @property
+    def ops(self):
+        return self._ops
+
+    def apply_all(self):
+        """
+        Apply the deferred operations to the underlying object
+
+        :return: the number of successful applications
+        """
+        n_successful = 0
+        for name, args, kwargs in self._ops:
+            with suppress(*self._swallow_exceptions):
+                getattr(self._obj, name)(*args, **kwargs)
+                n_successful += 1
+        self._ops = []
+        return n_successful
+
+    def __delitem__(self, *args, **kwargs):
+        return self._log_call('__delitem__', *args, **kwargs)
+
+    def __call__(self, *args, **kwargs):
+        return self._log_call('__call__', *args, **kwargs)
+
+    def __setitem__(self, *args, **kwargs):
+        return self._log_call('__setitem__', *args, **kwargs)
+
+    def _log_call(self, name, *args, **kwargs):
+        if self._eager:
+            getattr(self._obj, name)  # Raises an attribute error
+
+        i = len(self._ops)
+        self._ops.append((name, args, kwargs))
+        return i
+
+    def __getattr__(self, name):
+        return partial(self._log_call, name)
+
+    def __str__(self):
+        msg_fmt = "OpCollector([{} ops ready for processing])"
+        return msg_fmt.format(len(self._ops))
+
+    def __repr__(self):
+        return self.__str__()
+
+
+@contextmanager
+def deferred_delete(obj, skip_missing=True):
     """
     Context manager for performing deferred deletes on some dictionary.
 
@@ -161,33 +238,14 @@ class deferred_delete:
     mid-iteration (a RuntimeError).
 
     Deletions execute in order. And, multiple calls to delete are possible.
+
+
+    :param obj: the dictionary (or some object implementing `__delitem__`)
+    :param skip_missing: if True then the deferred operation only calls
+        the delete if the key is present in the underlying object
     """
-
-    def __init__(self, obj, skip_missing=True):
-        """
-
-        :param obj: the dictionary (or some object implementing `__delitem__`)
-        :param skip_missing: if True then the deferred operation only calls
-            the delete if the key is present in the underlying object
-        """
-        self._d = obj
-        self._ks = []
-        self._skip_missing = skip_missing
-        self._executed_deletions = 0
-
-    def __enter__(self):
-        self._executed_deletions = 0
-        return self
-
-    def __exit__(self, exception_type, exception_value, traceback):
-        for k in self._ks:
-            if not self._skip_missing or k in self._d:
-                self._executed_deletions += 1
-                del self._d[k]
-
-    def __delitem__(self, k):
-        self._ks.append(k)
-
-    @property
-    def executed_deletions(self):
-        return self._executed_deletions
+    ops = OpCollector(obj,
+                      eager=False,
+                      swallow_exceptions=[KeyError] if skip_missing else [])
+    yield ops
+    ops.apply_all()  # Note: Only executes if no exception raised to context
