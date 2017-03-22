@@ -124,6 +124,19 @@ def files_processor(generator_func, dir_path, shell_ptn="*", recursive=False):
                 yield item
 
 
+def jsonl_files_entities(dir_path, file_suffix="jsonl", recursive=False):
+    """
+    Helper function to process all json-line files in a directory.
+
+    :param dir_path: the directory containing jsonl files
+    :param file_suffix: the file suffix to accept
+    :param recursive: if True, scan recursively
+    """
+    ptn = "*." + file_suffix
+    for entry in files_processor(jsonlines_reader, dir_path, ptn):
+        yield entry
+
+
 def pd_print_entirely(frame_or_series):
     """
     Print a pandas dataframe or series in its entirety.
