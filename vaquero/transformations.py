@@ -137,7 +137,9 @@ def dict_string_values_to_bool(d, ks, true_set=None, false_set=None,
     """
     true_set = true_set or COMMON_BOOL_TRUE
     false_set = false_set or COMMON_BOOL_FALSE
-    f = lambda s: str_to_bool(s, true_set, false_set)
+
+    def f(s):
+        return str_to_bool(s, true_set, false_set)
     update_values(d, ks, f, must_exist)
 
 
@@ -199,3 +201,26 @@ def remove_private_keys(d, recursive=True, prefix='_'):
 
     for k in ks:
         del d[k]
+
+
+def reindex_columns_partial(df, cols):
+    """
+    Reorder a DataFrame so that the given columns come first.
+
+    :param df: The DataFrame to reorder
+    :param cols: The columns which should come first, in order.
+    :return df: The reindex DataFrame
+    """
+    cols = list(cols)
+
+    ordering = cols[:]
+    for c in df.columns:
+        if c in cols:
+            cols.remove(c)
+        else:
+            ordering.append(c)
+
+    if cols:
+        raise KeyError("Unable to find keys: {}".format(",".join(cols)))
+
+    return df.reindex(columns=ordering)

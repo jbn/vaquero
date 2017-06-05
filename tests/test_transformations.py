@@ -1,4 +1,5 @@
 import unittest
+import pandas as pd
 
 from vaquero.transformations import *
 
@@ -84,10 +85,19 @@ class TestTransformations(unittest.TestCase):
         example = {'billing': {'address': "42 main street", 10: 'something'}}
         result = flat_mapping_of_dict(example, sep='-')
         self.assertEqual(result, {'billing-address': "42 main street",
-                                   'billing-10': "something"})
+                                  'billing-10': "something"})
 
     def test_remove_private_keys(self):
         example = {'-a': 20, 'b': {'-c': 100, 'd': 300}}
-        expected  = {'b': {'d': 300}}
+        expected = {'b': {'d': 300}}
         remove_private_keys(example, prefix='-')
         self.assertEqual(example, expected)
+
+    def test_reindex_columns_partial(self):
+        df = pd.DataFrame({'x': [1, 2, 3], 'y': [1, 2, 3], 'z': [1, 2, 3]})
+        self.assertTrue(all(df.columns == ['x', 'y', 'z']))
+        df_1 = reindex_columns_partial(df, ['z', 'x', 'y'])
+        self.assertTrue(all(df_1.columns == ['z', 'x', 'y']))
+        self.assertTrue(all(df.columns == ['x', 'y', 'z']))
+        with self.assertRaisesRegexp(KeyError, "keys"):
+            reindex_columns_partial(df, ['w'])
