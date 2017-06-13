@@ -20,7 +20,11 @@ def rename_ks(d, mapping, must_exist=False):
 PYTHONIZE_IDENTIFIER_RE = re.compile('[^0-9a-z]+')
 
 
-def pythonize_identifier(s):
+def pythonize_identifier(s, delete_chars=None):
+    if delete_chars:
+        for c in delete_chars:
+            s = s.replace(c, '')
+
     s = PYTHONIZE_IDENTIFIER_RE.sub('_', s.lower())
     if s and s[0] == '_':
         s = s[1:]
@@ -29,10 +33,10 @@ def pythonize_identifier(s):
     return s
 
 
-def pythonize_ks(d, recursive=True):
+def pythonize_ks(d, recursive=True, delete_chars=None):
     remapping = {}
     for k, v in d.items():
-        pythonized = pythonize_identifier(k)
+        pythonized = pythonize_identifier(k, delete_chars)
         if pythonized != k:
             remapping[k] = pythonized
 

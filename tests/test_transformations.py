@@ -76,6 +76,10 @@ class TestTransformations(unittest.TestCase):
                           'last_name': 'Nelson',
                           'location': {'city_a': 'NYC', 'city_b': 'LA'}})
 
+        example = {"owner's number": 42}
+        pythonize_ks(example, delete_chars="'")
+        self.assertEqual(example, {"owners_number": 42})
+
     def test_dict_values_to_upper_if_str(self):
         example = {'a': "john", 'b': 32}
         dict_values_to_upper_if_str(example)
