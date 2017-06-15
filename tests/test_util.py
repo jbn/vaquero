@@ -90,7 +90,6 @@ class TestUtil(unittest.TestCase):
         items = files_processor(slurp, file_path, "*.txt", recursive=False)
         self.assertEqual(list(items), list("hello"))
 
-
     def test_op_collector(self):
         d = {}
 
@@ -114,6 +113,7 @@ class TestUtil(unittest.TestCase):
         self.assertEqual(d, {'y': 20})
 
         called = []
+
         def f(x):
             called.append(x)
         ops = OpCollector(f)
@@ -148,3 +148,7 @@ class TestUtil(unittest.TestCase):
                 1/0
         self.assertEqual(d, {})
 
+    def test_chunking(self):
+        expected = [[1, 2, 3], [4, 5, 6], [7, 8]]
+
+        self.assertEqual(list(chunking(range(1, 9), 3)), expected)

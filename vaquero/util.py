@@ -262,3 +262,24 @@ def deferred_delete(obj, skip_missing=True):
                       swallow_exceptions=[KeyError] if skip_missing else [])
     yield ops
     ops.apply_all()  # Note: Only executes if no exception raised to context
+
+
+def chunking(items, n):
+    """
+    Convert sequence of items into sequence of n-sized sequences
+
+    The final sequence always gets yielded, even if less than n.
+
+    :param items: items to chunk
+    :param n: number of items per chunk:
+    """
+    chunk = []
+    for item in items:
+        if len(chunk) == n:
+            yield chunk
+            chunk = []
+
+        chunk.append(item)
+
+    if chunk:
+        yield chunk
