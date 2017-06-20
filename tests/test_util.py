@@ -152,3 +152,9 @@ class TestUtil(unittest.TestCase):
         expected = [[1, 2, 3], [4, 5, 6], [7, 8]]
 
         self.assertEqual(list(chunking(range(1, 9), 3)), expected)
+
+    def test_not_null(self):
+        items = [1, None, np.NaN, 2, 3]
+        expected = [1, 2, 3]
+
+        self.assertEqual(list(not_null(items)), expected)

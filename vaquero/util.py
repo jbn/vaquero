@@ -283,3 +283,10 @@ def chunking(items, n):
 
     if chunk:
         yield chunk
+
+
+def not_null(items):
+    """:return: iterable of items that are not None or NaN-like"""
+    for item in items:
+        if item is not None and item == item:
+            yield item
