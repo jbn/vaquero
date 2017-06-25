@@ -37,6 +37,19 @@ def nth(items, i):
             return item
 
 
+def take(items, n):
+    """
+    Yield the first n items of a sequence.
+
+    :param items: an iterable
+    """
+    for item in items:
+        yield item
+        n -= 1
+        if n == 0:
+            break
+
+
 def tap(items, f=print):
     """
     Apply f (default=print) to each item in items then yield the item.

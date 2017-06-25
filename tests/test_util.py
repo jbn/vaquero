@@ -11,6 +11,7 @@ THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 class TestUtil(unittest.TestCase):
+
     def test_first(self):
         def f():
             yield 10
@@ -25,6 +26,9 @@ class TestUtil(unittest.TestCase):
             yield 30
 
         self.assertEqual(nth(f(), 1), 20)
+
+    def test_take(self):
+        self.assertEqual(list(take(range(1000), 2)), [0, 1])
 
     def test_tap(self):
         accumulator = []
@@ -145,7 +149,7 @@ class TestUtil(unittest.TestCase):
             with deferred_delete(d) as proxy:
                 del proxy['a']
                 proxy['a'] = 20
-                1/0
+                1 / 0
         self.assertEqual(d, {})
 
     def test_chunking(self):
