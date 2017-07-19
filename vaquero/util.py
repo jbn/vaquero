@@ -8,6 +8,7 @@ from contextlib import contextmanager
 from fnmatch import fnmatch
 from functools import partial, reduce
 from collections import OrderedDict
+from itertools import islice as take
 
 
 def first(items):
@@ -35,19 +36,6 @@ def nth(items, i):
     for j, item in enumerate(items):
         if j == i:
             return item
-
-
-def take(items, n):
-    """
-    Yield the first n items of a sequence.
-
-    :param items: an iterable
-    """
-    for item in items:
-        yield item
-        n -= 1
-        if n == 0:
-            break
 
 
 def tap(items, f=print):
