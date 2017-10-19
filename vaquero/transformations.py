@@ -1,6 +1,45 @@
 import re
 
 
+NUMERIC_CHARS = set("0123456789.")
+
+NUMERIC_CHARS_BYTES = set(b"0123456789.")
+
+
+def robust_float(s):
+    """
+    Convert a given value into a float.
+
+    :param s: a string, int, float, or other
+    :return: a float of the given value, or None if not possible.
+    """
+    if isinstance(s, (int, float)):
+        return float(s)
+    elif isinstance(s, str):
+        try:
+            return float("".join(c for c in s if c in NUMERIC_CHARS))
+        except ValueError:
+            return None
+    elif isinstance(s, bytes):
+        try:
+            return float(b"".join(c for c in s if c in NUMERIC_CHARS_BYTES))
+        except ValueError:
+            return None
+    else:
+        return None
+
+
+def robust_int(s):
+    """
+    Convert a given value into a int.
+
+    :param s: a string, int, float, or other
+    :return: a int of the given value, or None if not possible.
+    """
+    x = robust_float(s)
+    return x if x is None else int(x) 
+
+
 def rename_ks(d, mapping, must_exist=False):
     """
     Rename the keys in a given dictionary.
@@ -75,7 +114,7 @@ def update_values(d, ks, converter, must_exist):
             assert key_exists, "Key {} not in {}".format(k, d)
 
 
-def dict_values_to_int(d, ks, must_exist=False):
+def dict_values_to_int(d, ks=None, must_exist=False, robust=True):
     """
     Convert values of a dict to ints for some keys.
 
@@ -84,10 +123,11 @@ def dict_values_to_int(d, ks, must_exist=False):
     :param must_exist: raises an exception if set to True and the given key
         does not exist in the given dict
     """
-    update_values(d, ks, int, must_exist)
+    f = robust_int if robust else int
+    update_values(d, ks or d.keys(), f, must_exist)
 
 
-def dict_values_to_float(d, ks, must_exist=False):
+def dict_values_to_float(d, ks=None, must_exist=False, robust=True):
     """
     Convert values of a dict to floats for some keys.
 
@@ -96,7 +136,8 @@ def dict_values_to_float(d, ks, must_exist=False):
     :param must_exist: raises an exception if set to True and the given key
         does not exist in the given dict
     """
-    update_values(d, ks, float, must_exist)
+    f = robust_float if robust else int
+    update_values(d, ks or d.keys(), f, must_exist)
 
 
 def dict_values_to_upper_if_str(d):

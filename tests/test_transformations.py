@@ -5,6 +5,25 @@ from vaquero.transformations import *
 
 
 class TestTransformations(unittest.TestCase):
+
+    def test_robust_float(self):
+        self.assertEqual(robust_float(1), 1.0)
+        self.assertEqual(robust_float(1.5), 1.5)
+        self.assertEqual(robust_float("1"), 1)
+        self.assertEqual(robust_float("1.5"), 1.5)
+        self.assertEqual(robust_float("$27,182,818.28"), 27182818.28)
+        self.assertIsNone(robust_float("bird"))
+        self.assertIsNone(robust_float(None))
+
+    def test_robust_int(self):
+        self.assertEqual(robust_int(1), 1)
+        self.assertEqual(robust_int(1.5), 1)
+        self.assertEqual(robust_int("1"), 1)
+        self.assertEqual(robust_int("1.5"), 1)
+        self.assertEqual(robust_int("$27,182,818.28"), 27182818)
+        self.assertIsNone(robust_float("bird"))
+        self.assertIsNone(robust_float(None))
+
     def test_rename_ks(self):
         d = {'a': 10, 'b': 20}
         expected = {'A': 10, 'b_': 20}

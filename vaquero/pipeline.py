@@ -62,6 +62,10 @@ def collect_pipeline(module, skip_private=True, reloading=True):
 
 
 class Pipeline(object):
+    """
+    A sequence of functions for data processing.
+    """
+
     def __init__(self):
         self._pipeline = []
         self._captures = []
