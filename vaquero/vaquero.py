@@ -9,7 +9,23 @@ class VaqueroException(Exception):
     pass
 
 
+def _make_pairs_table(d, sort_ks=True, depth=""):
+    rows = [depth + "<table>"]
+    ks = d.keys() if not sort_ks else sorted(d.keys())
+
+    for k in ks:
+        v = d[k]
+        if isinstance(v, dict):
+            v = _make_pairs_table(v, sort_ks=sort_ks, depth=depth + "\t")
+
+        rows.append("<tr><td>{}</td><td>{}</td></tr>".format(k, v))
+
+    rows.append("</table>")
+    return "\n{}".format(depth).join(rows)
+
+
 class Vaquero:
+
     def __init__(self, max_failures=None, capture_error_invocations=True,
                  annotate_failure_with_input=False):
         """
@@ -248,3 +264,5 @@ class Vaquero:
 
         return sub_vaquero
 
+    def _repr_html_(self):
+        return _make_pairs_table(self.stats())
